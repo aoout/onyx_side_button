@@ -23,7 +23,7 @@ jobs:
     if: (github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && !inputs.bump)
     uses: mara-li/reusable-workflows/.github/workflows/obsidian-plugin-release.yaml@main
     with:
-      PLUGIN_NAME: "Onyx Side Button"
+      PLUGIN_NAME: "onyx_side_button"
     secrets: 
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   bump-version:
