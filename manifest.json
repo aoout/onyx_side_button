@@ -1,0 +1,11 @@
+{
+	"id": "onyx_side_button",
+	"name": "Onyx Side Button",
+	"description": "Enable Onyx side buttons to control obsidian flip pages.",
+	"author": "aoout",
+	"authorUrl": "https://github.com/aoout",
+
+	"isDesktopOnly": false,
+	"minAppVersion": "0.16.0",
+	"version": "0.0.1"
+}
