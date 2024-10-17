@@ -19,11 +19,7 @@ export default class OnyxSideButton extends Plugin {
 					lastCall = now;
 					evt.preventDefault();
 					const newdata = evt.touches[0].pageY;
-					if (this.lastPageY < newdata) {
-						this.flip("up");
-					} else {
-						this.flip("down");
-					}
+					this.flip(this.lastPageY < newdata ? "up" : "down");
 				};
 			})
 		);
@@ -31,34 +27,9 @@ export default class OnyxSideButton extends Plugin {
 
 	flip(mode: string) {
 		const thisView = this.app.workspace.getActiveViewOfType(MarkdownView);
-		let thisScrollObj =
-			thisView?.getMode() == "preview"
-				? // @ts-ignore
-				thisView?.previewMode?.renderer?.previewEl
-				: // @ts-ignore
-				thisView?.editMode?.cm?.scrollDOM;
-		if (!thisScrollObj) {
-			// for TextFileView
-			try {
-				// @ts-ignore
-				thisScrollObj = this.app.workspace.getActiveFileView()?.containerEl?.children[1];
-				if (!thisScrollObj) {
-					console.error("scroll failed ==> scrollObj is missing");
-					return;
-				}
-			} catch (e) {
-				console.error("scroll failed ==> ", e);
-				return;
-			}
-		}
-		const range = thisScrollObj.clientHeight - 60;
-		switch (mode) {
-		case "up":
-			thisScrollObj.scrollBy(0, -range);
-			break;
-		case "down":
-			thisScrollObj.scrollBy(0, range);
-			break;
-		}
+		// @ts-ignore
+		const thisScrollObj = thisView?.previewMode?.renderer?.previewEl;
+		const range = thisScrollObj?.clientHeight - 60;
+		thisScrollObj?.scrollBy(0, mode === "up" ? -range : range);
 	}
 }
