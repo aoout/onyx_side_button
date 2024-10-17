@@ -9,15 +9,14 @@ export default class OnyxSideButton extends Plugin {
 
 				viewEl.ontouchstart = (evt) => {
 					this.lastPageY = evt.touches[0].pageY;
-					evt.preventDefault();
 				};
 				let lastCall = 0;
 				const throttleTime = 1000;
 				viewEl.ontouchmove = (evt) => {
+					evt.preventDefault();
 					const now = Date.now();
 					if (now - lastCall < throttleTime) return;
 					lastCall = now;
-					evt.preventDefault();
 					const newdata = evt.touches[0].pageY;
 					this.flip(this.lastPageY < newdata ? "up" : "down");
 				};
