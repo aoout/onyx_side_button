@@ -9,9 +9,18 @@ export default class OnyxSideButton extends Plugin {
 		this.addSettingTab(new OnyxSideButtonSettingsTab(this.app, this));
 		this.registerEvent(
 			this.app.workspace.on("file-open", (_) => {
+				let lastKeyDownTime = 0;
+				let lastKeyDownKey = "";
 				document.onkeydown = (evt) => {
 					evt.preventDefault();
-					this.flip(evt.key == "pageUp" ? "up" : "down");
+					const currentTime = new Date().getTime();
+					if (currentTime - lastKeyDownTime < 1000 && lastKeyDownKey === evt.key) {
+						this.flip(evt.key == "PageUp" ? "top" : "bottom");
+					} else {
+						this.flip(evt.key == "PageUp" ? "up" : "down");
+					}
+					lastKeyDownTime = currentTime;
+					lastKeyDownKey = evt.key;
 				};
 			})
 		);
@@ -30,6 +39,19 @@ export default class OnyxSideButton extends Plugin {
 		// @ts-ignore
 		const thisScrollObj = thisView?.previewMode?.renderer?.previewEl;
 		const range = thisScrollObj?.clientHeight - this.settings.flipingBias;
-		thisScrollObj?.scrollBy(0, mode === "up" ? -range : range);
+		switch (mode) {
+		case "up":
+			thisScrollObj?.scrollBy(0, -range);
+			break;
+		case "down":
+			thisScrollObj?.scrollBy(0, range);
+			break;
+		case "top":
+			thisScrollObj?.scroll(0, 0);
+			break;
+		case "bottom":
+			thisScrollObj?.scroll(0, thisScrollObj?.scrollHeight);
+			break;
+		}
 	}
 }
