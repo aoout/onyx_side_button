@@ -1,4 +1,4 @@
-import { MarkdownView, Plugin } from "obsidian";
+import { MarkdownView, Notice, Plugin } from "obsidian";
 import { DEFAULT_SETTINGS, OnyxSideButtonSettings } from "./settings/settings";
 import { OnyxSideButtonSettingsTab } from "./settings/settingsTab";
 
@@ -7,20 +7,30 @@ export default class OnyxSideButton extends Plugin {
 	async onload() {
 		await this.loadSettings();
 		this.addSettingTab(new OnyxSideButtonSettingsTab(this.app, this));
+		this.addCommand({
+			id: "test",
+			name: "test",
+			callback: () => {
+				this.flip("down");
+			},
+		});
 		this.registerEvent(
 			this.app.workspace.on("file-open", (_) => {
 				let lastKeyDownTime = 0;
 				let lastKeyDownKey = "";
 				document.onkeydown = (evt) => {
-					evt.preventDefault();
-					const currentTime = new Date().getTime();
-					if (currentTime - lastKeyDownTime < 1000 && lastKeyDownKey === evt.key) {
-						this.flip(evt.key == "PageUp" ? "top" : "bottom");
-					} else {
-						this.flip(evt.key == "PageUp" ? "up" : "down");
+					new Notice(evt.key);
+					if (evt.key == "PageUp" || evt.key == "PageDown") {
+						evt.preventDefault();
+						const currentTime = new Date().getTime();
+						if (currentTime - lastKeyDownTime < 1000 && lastKeyDownKey === evt.key) {
+							this.flip(evt.key == "PageUp" ? "top" : "bottom");
+						} else {
+							this.flip(evt.key == "PageUp" ? "up" : "down");
+						}
+						lastKeyDownTime = currentTime;
+						lastKeyDownKey = evt.key;
 					}
-					lastKeyDownTime = currentTime;
-					lastKeyDownKey = evt.key;
 				};
 			})
 		);
@@ -45,6 +55,7 @@ export default class OnyxSideButton extends Plugin {
 			break;
 		case "down":
 			thisScrollObj?.scrollBy(0, range);
+			console.log(thisScrollObj.scrollTop);
 			break;
 		case "top":
 			thisScrollObj?.scroll(0, 0);
