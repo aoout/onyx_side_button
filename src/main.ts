@@ -1,29 +1,17 @@
 import { MarkdownView, Plugin } from "obsidian";
-import { OnyxSideButtonSettings, DEFAULT_SETTINGS } from "./settings/settings";
+import { DEFAULT_SETTINGS, OnyxSideButtonSettings } from "./settings/settings";
 import { OnyxSideButtonSettingsTab } from "./settings/settingsTab";
 
 export default class OnyxSideButton extends Plugin {
 	settings: OnyxSideButtonSettings;
-	lastPageY: number;
 	async onload() {
 		await this.loadSettings();
 		this.addSettingTab(new OnyxSideButtonSettingsTab(this.app, this));
 		this.registerEvent(
 			this.app.workspace.on("file-open", (_) => {
-				const viewEl = document.querySelector(".markdown-reading-view") as HTMLElement;
-
-				viewEl.ontouchstart = (evt) => {
-					this.lastPageY = evt.touches[0].pageY;
-				};
-				let lastCall = 0;
-				const throttleTime = 1000;
-				viewEl.ontouchmove = (evt) => {
+				document.onkeydown = (evt) => {
 					evt.preventDefault();
-					const now = Date.now();
-					if (now - lastCall < throttleTime) return;
-					lastCall = now;
-					const newdata = evt.touches[0].pageY;
-					this.flip(this.lastPageY < newdata ? "up" : "down");
+					this.flip(evt.key == "pageUp" ? "up" : "down");
 				};
 			})
 		);
