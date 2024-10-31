@@ -25,19 +25,6 @@ export class OnyxSideButtonSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					})
 			);
-
-		new Setting(containerEl)
-			.setName("Double Click Interval")
-			.setDesc("Double click interval upper limit.")
-			.addText((text) =>
-				text
-					.setPlaceholder("1000")
-					.setValue(String(this.plugin.settings.doubleClickInterval))
-					.onChange(async (value) => {
-						this.plugin.settings.doubleClickInterval = Number(value);
-						await this.plugin.saveSettings();
-					})
-			);
 	}
 }
 
