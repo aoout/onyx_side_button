@@ -46,8 +46,26 @@ export default class OnyxSideButton extends Plugin {
 
 	flip(mode: string) {
 		const thisView = this.app.workspace.getActiveViewOfType(MarkdownView);
-		// @ts-ignore
-		const thisScrollObj = thisView?.previewMode?.renderer?.previewEl;
+		let thisScrollObj =
+			thisView?.getMode() == "preview"
+			// @ts-ignore
+				? thisView?.previewMode?.renderer?.previewEl
+				// @ts-ignore
+				: thisView?.editMode?.cm?.scrollDOM;
+		if (!thisScrollObj) {
+			// for TextFileView
+			try {
+				// @ts-ignore
+				thisScrollObj = this.app.workspace.getActiveFileView()?.containerEl?.children[1];
+				if (!thisScrollObj) {
+					console.error("scroll failed ==> scrollObj is missing");
+					return;
+				}
+			} catch (e) {
+				console.error("scroll failed ==> ", e);
+				return;
+			}
+		}
 		const range = thisScrollObj?.clientHeight - this.settings.flipingBias;
 		switch (mode) {
 		case "up":
