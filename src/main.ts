@@ -23,7 +23,7 @@ export default class OnyxSideButton extends Plugin {
 					if (evt.key == "PageUp" || evt.key == "PageDown") {
 						evt.preventDefault();
 						const currentTime = new Date().getTime();
-						if (currentTime - lastKeyDownTime < 1000 && lastKeyDownKey === evt.key) {
+						if (currentTime - lastKeyDownTime < this.settings.doubleClickInterval && lastKeyDownKey === evt.key) {
 							this.flip(evt.key == "PageUp" ? "top" : "bottom");
 						} else {
 							this.flip(evt.key == "PageUp" ? "up" : "down");
